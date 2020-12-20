@@ -5,12 +5,11 @@ var capSelection = [ 'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O'
 // Assignment code here
 passwordSelection = function () {
   // choose length of password 
-  var passLength = prompt("How long would you like your password to be? Please enter a number between 8 and 128."); 
+  var passLength = parseInt (prompt("How long would you like your password to be? Please enter a number between 8 and 128.")); 
     if (passLength === null || passLength === "" || isNaN(passLength) || passLength < 8 || passLength > 128) {
      alert("You need to provide a valid answer! Please try again.");
      return; 
     };
-    passLengthInterger = parseInt(passLength);
     console.log ("Password length is " + passLength); 
 
     var characterConfirm = confirm("Would you like your password to have special characters?");
@@ -20,58 +19,69 @@ passwordSelection = function () {
     var capitalConfirm = confirm("Would you like your password to have capital letters?");
 
     var lowerConfirm = confirm("Would you like your password to have lowercase letters?");
-}; 
+    var passwordOptions = {
+      length: passLength,
+      characterConfirm: characterConfirm,
+      numberConfirm: numberConfirm,
+      lowerConfirm: lowerConfirm,
+      capitalConfirm: capitalConfirm
+  };
+  return passwordOptions;
+}
 
-// getting random characters from different arrays 
-function randomArray(x) {
-  var randomSelection = Math.floor(Math.random() * x.length);
-  var randElement = x;
+
+// getting random characters from different arrays  
+function randomArray(arr) {
+  var randomSelection = Math.floor(Math.random() * arr.length);
+  var randElement = arr[randomSelection];
   return randElement;
 }; 
 
 function passwordGenerator() { 
-  var result = "";
+  var options = passwordSelection(); 
+  var result = [];
   // Array to store types of characters to include in password
-  var optionalCharacters = "";
+  var optionalCharacters = [];
 
   // Array to contain one of each type of chosen character to ensure each will be used
-  var importantCharacters = "";
+  var importantCharacters = [];
 
   // if the selection chosen by the user contains special characters, then add the special characters to the password
-  if (passwordSelection() === characterConfirm) {
+  if (options.characterConfirm) {
     optionalCharacters = optionalCharacters.concat(charsSelection);
-    importantCharacters.unshift(getRandom(charsSelection));
+    importantCharacters.unshift(randomArray(charsSelection));
   }
 
   // if the selection chosen by the user contains numbers, then add the numbers to the password at random
-  if (passwordSelection() === numberConfirm) {
+  if (options.numberConfirm) {
     optionalCharacters = optionalCharacters.concat(numSelection);
-    importantCharacters.push(getRandom(numSelection));
+    importantCharacters.push(randomArray(numSelection));
   }
 
   // if the selection chosen by the user contains lowercase letters, then add the letters to the password at random
-  if (passwordSelection() === lowerConfirm) {
+  if (options.lowerConfirm) {
     optionalCharacters = optionalCharacters.concat(lowSelection);
-    importantCharacters.unshift(getRandom(lowSelection));
+    importantCharacters.unshift(randomArray(lowSelection));
   }
 
   // if the selection chosen by the user contains capital letters, then add the letters to the password at random
-  if (passwordSelection() === capSelection) {
+  if (options.capitalConfirm) {
     optionalCharacters = optionalCharacters.concat(capSelection);
-    importantCharacters.push(getRandom(capSelection));
+    importantCharacters.push(randomArray(capSelection));
   }
 
   // generate the password based on the length chosen 
-  for (var i = 0; i < passLengthInterger; i++) {
-    var optionalCharacters = randomArray(optionalCharacters);
+  for (var i = 0; i < options.length; i++) {
+    var optionalCharacter = randomArray(optionalCharacters);
     result.push(optionalCharacter);
   }
 
-  // Mix in at least one of each guaranteed character in the result
+  // One of each guaranteed character in the result
   for (var i = 0; i < importantCharacters.length; i++) {
     result[i] = importantCharacters[i];
-  }
-  return result
+  } 
+  debugger; 
+  return result.join(''); 
 }; 
 
 // Get references to the #generate element
